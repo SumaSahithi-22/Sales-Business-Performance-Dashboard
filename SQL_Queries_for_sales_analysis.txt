@@ -1,0 +1,103 @@
+SQL Queries for Sales Analysis
+
+1. Total Sales
+Calculate overall revenue.
+SELECT SUM(SalesAmount) AS Total_Sales
+FROM Orders;
+
+2. Total Number of Orders
+SELECT COUNT(DISTINCT SalesOrderNumber) AS Total_Orders
+FROM Orders;
+
+3. Total Quantity Sold
+SELECT SUM(OrderQuantity) AS Total_Quantity
+FROM Orders;
+4. Average Order Value
+SELECT 
+SUM(SalesAmount) / COUNT(DISTINCT SalesOrderNumber) AS Avg_Order_Value
+FROM Orders;
+
+5. Sales by Territory
+Useful for regional performance analysis.
+SELECT 
+SalesTerritoryKey,
+SUM(SalesAmount) AS Total_Sales
+FROM Orders
+GROUP BY SalesTerritoryKey
+ORDER BY Total_Sales DESC;
+
+6. Monthly Sales Trend
+Used for line charts in dashboards.
+SELECT 
+YEAR(OrderDate) AS Sales_Year,
+MONTH(OrderDate) AS Sales_Month,
+SUM(SalesAmount) AS Monthly_Sales
+FROM Orders
+GROUP BY YEAR(OrderDate), MONTH(OrderDate)
+ORDER BY Sales_Year, Sales_Month;
+
+7.Yearly Sales Report
+SELECT 
+YEAR(OrderDate) AS Sales_Year,
+SUM(SalesAmount) AS Total_Sales
+FROM Orders
+GROUP BY YEAR(OrderDate)
+ORDER BY Sales_Year;
+
+8. Top 5 Territories by Sales
+SELECT TOP 5
+SalesTerritoryKey,
+SUM(SalesAmount) AS Total_Sales
+FROM Orders
+GROUP BY SalesTerritoryKey
+ORDER BY Total_Sales DESC;
+
+9. Average Shipping Time
+SELECT 
+AVG(DATEDIFF(DAY, OrderDate, ShipDate)) AS Avg_Shipping_Days
+FROM Orders;
+
+10. Orders Shipped Late (>5 days)
+SELECT 
+SalesOrderNumber,
+OrderDate,
+ShipDate,
+DATEDIFF(DAY, OrderDate, ShipDate) AS Shipping_Days
+FROM Orders
+WHERE DATEDIFF(DAY, OrderDate, ShipDate) > 5;
+
+11. Top 10 Customers by Sales
+SELECT TOP 10
+CustomerKey,
+SUM(SalesAmount) AS Total_Sales
+FROM Orders
+GROUP BY CustomerKey
+ORDER BY Total_Sales DESC;
+
+12. Daily Sales
+SELECT 
+OrderDate,
+SUM(SalesAmount) AS Daily_Sales
+FROM Orders
+GROUP BY OrderDate
+ORDER BY OrderDate;
+
+13. Territory Contribution Percentage
+SELECT 
+SalesTerritoryKey,
+SUM(SalesAmount) AS Territory_Sales,
+SUM(SalesAmount) * 100.0 / 
+(SELECT SUM(SalesAmount) FROM Orders) AS Contribution_Percentage
+FROM Orders
+GROUP BY SalesTerritoryKey;
+
+14. Orders with Highest Quantity
+SELECT TOP 10 *
+FROM Orders
+ORDER BY OrderQuantity DESC;
+
+15. Sales with Tax Amount
+SELECT 
+SUM(SalesAmount) AS Total_Sales,
+SUM(TaxAmt) AS Total_Tax
+FROM Orders;
